@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:weightSum="1">
+
+    <TextClock
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textClock"
+        android:layout_gravity="center_horizontal"
+        android:textSize="32dp" />
+
+    <ListView
+        android:layout_width="321dp"
+        android:layout_height="232dp"
+        android:id="@+id/newsList"
+        android:layout_gravity="center_horizontal"
+        android:clickable="false"
+        android:choiceMode="none"
+        android:dividerHeight="0dp"
+        android:divider="@null"
+
+        android:layout_weight="0.41" />
+
+
+</LinearLayout>
