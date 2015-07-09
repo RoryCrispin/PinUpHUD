@@ -1,29 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center"
+    android:orientation="vertical"
     android:weightSum="1">
 
     <TextClock
+        android:id="@+id/textClock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textClock"
         android:layout_gravity="center_horizontal"
         android:textSize="32dp" />
 
     <ListView
+        android:id="@+id/newsList"
         android:layout_width="321dp"
         android:layout_height="232dp"
-        android:id="@+id/newsList"
         android:layout_gravity="center_horizontal"
-        android:clickable="false"
+        android:layout_weight="0.41"
         android:choiceMode="none"
-        android:dividerHeight="0dp"
         android:divider="@null"
+        android:dividerHeight="0dp"
+        android:listSelector="@android:color/transparent"
 
-        android:layout_weight="0.41" />
+        />
+
+    <Button
+        android:id="@+id/button"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:onClick="refresh"
+        android:text="New Button" />
 
 
 </LinearLayout>

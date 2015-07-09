@@ -1,8 +1,9 @@
 package com.shirwa.simplistic_rss;
 
+import java.util.List;
+
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.List;
 
 /*
  * Copyright (C) 2014 Shirwa Mohamed <shirwa99@gmail.com>
