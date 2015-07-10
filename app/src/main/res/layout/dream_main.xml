@@ -1,39 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center"
     android:orientation="vertical"
     android:weightSum="1">
 
-    <TextClock
-        android:id="@+id/textClock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="32dp" />
 
-    <ListView
-        android:id="@+id/newsList"
-        android:layout_width="321dp"
-        android:layout_height="232dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.41"
-        android:choiceMode="none"
-        android:divider="@null"
-        android:dividerHeight="0dp"
-        android:listSelector="@android:color/transparent"
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="432dp">
 
-        />
+        <TextClock
+            android:id="@+id/textClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/newsList"
+            android:layout_alignEnd="@+id/button"
+            android:layout_gravity="center_horizontal"
+            android:textSize="32dp"/>
 
-    <Button
-        android:id="@+id/button"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:onClick="refresh"
-        android:text="New Button" />
+        <Button
+            android:id="@+id/button"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/relativeLayout"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center_horizontal|bottom"
+            android:onClick="load_next_three_articles"
+            android:text="New Button"/>
+
+        <ListView
+            android:id="@+id/newsList"
+            android:layout_width="321dp"
+            android:layout_height="338dp"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="55dp"
+            android:layout_weight="0.41"
+            android:choiceMode="none"
+            android:divider="@null"
+
+            android:dividerHeight="0dp"
+            android:listSelector="@android:color/transparent"/>
+    </FrameLayout>
 
 
-</LinearLayout>
+</FrameLayout>

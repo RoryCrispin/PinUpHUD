@@ -1,5 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.rozzles.pinup">
+<manifest
+    package="com.rozzles.pinup"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,7 +14,7 @@
         android:theme="@style/AppTheme">
 
 
-        <service
+    <service
             android:name=".PinUp"
             android:exported="true"
             android:label="@string/daydream_name">
