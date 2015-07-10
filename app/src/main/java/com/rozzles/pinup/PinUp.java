@@ -3,19 +3,17 @@ package com.rozzles.pinup;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.StrictMode;
 import android.service.dreams.DreamService;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.shirwa.simplistic_rss.RssItem;
 import com.shirwa.simplistic_rss.RssReader;
@@ -28,51 +26,30 @@ import java.util.List;
  */
 public class PinUp extends DreamService implements OnTouchListener {
 
-    List<RssItem> RssItems = null;
+    private final com.rozzles.pinup.antiBurnIn antiBurnIn = new antiBurnIn();
+    private final com.rozzles.pinup.spotifyBroadcastHandler spotifyBroadcastHandler = new spotifyBroadcastHandler();
+    private List<RssItem> RssItems = null;
 
-    String url = "http://feeds.bbci.co.uk/news/world/rss.xml";
-    ListView newsList;
-    ArrayAdapter<String> adapter;
+    private String url = "http://feeds.bbci.co.uk/news/world/rss.xml";
+    private TextView nowPlaying_label;
+    private ListView newsList;
+    private ArrayAdapter<String> adapter;
 
-    ArrayList<String> threeArticles;
-    int news_index_pos = 0; //sometimes snake case is better ok
+    private ArrayList<String> threeArticles;
+    private int news_index_pos = 0; //sometimes snake case is better ok
+
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-
         @Override
         public void onReceive(Context context, Intent intent) {
-
-            // This is sent with all broadcasts, regardless of type. The value is taken from
-            // System.currentTimeMillis(), which you can compare to in order to determine how
-            // old the event is.
-            long timeSentInMs = intent.getLongExtra("timeSent", 0L);
-
-            String action = intent.getAction();
-            if (action.equals(BroadcastTypes.METADATA_CHANGED)) {
-                String trackId = intent.getStringExtra("id");
-                String artistName = intent.getStringExtra("artist");
-                String albumName = intent.getStringExtra("album");
-                String trackName = intent.getStringExtra("track");
-//                int trackLengthInSec = intent.getIntExtra("length", 0);
-                // Do something with extracted information...
-
-                System.out.println("tn: " + trackName);
-
-            } else if (action.equals(BroadcastTypes.PLAYBACK_STATE_CHANGED)) {
-                boolean playing = intent.getBooleanExtra("playing", false);
-                //int positionInMs = intent.getIntExtra("playbackPosition", 0);
-                // Do something with extracted information
-            } else if (action.equals(BroadcastTypes.QUEUE_CHANGED)) {
-                // Sent only as a notification, your app may want to respond accordingly.
-            }
-        }
-
-        final class BroadcastTypes {
-            static final String SPOTIFY_PACKAGE = "com.spotify.music";
-            static final String PLAYBACK_STATE_CHANGED = SPOTIFY_PACKAGE + ".playbackstatechanged";
-            static final String QUEUE_CHANGED = SPOTIFY_PACKAGE + ".queuechanged";
-            static final String METADATA_CHANGED = SPOTIFY_PACKAGE + ".metadatachanged";
+            spotifyBroadcastHandler.spotify_broadcast_reciever(intent);
         }
     };
+
+    public void set_nowPlayingLabel(String text) {
+        nowPlaying_label.setText(text);
+    }
+
+
 
     @Override
     public void onDreamingStarted() {
@@ -83,24 +60,24 @@ public class PinUp extends DreamService implements OnTouchListener {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.dream_main);
+        assign_ui_components();
         loadNewsfeed();
-
-        IntentFilter iF = new IntentFilter();
-        iF.addAction("com.spotify.music.metadatachanged");
-        iF.addAction("com.spotify.music.playbackstatechanged");
-        iF.addAction("com.spotify.music.queuechanged");
-//        iF.addAction("android.intent.action.HEADSET_PLUG");
-
-        registerReceiver(mReceiver, iF);
-
+//        set_nowPlayingLabel();
+        registerReceiver(mReceiver, spotifyBroadcastHandler.spotify_intent_filter());
 
     }
+
+    public void assign_ui_components() {
+        nowPlaying_label = (TextView) findViewById(R.id.nowPlaying_label);
+        newsList = (ListView) findViewById(R.id.newsList);
+
+    }
+
 
     private void loadNewsfeed() {
         fetchRss(url);
         threeArticles = fill_nf_array(0);
         System.out.println(RssItems.get(0).getPubDate().getTime());
-        newsList = (ListView) findViewById(R.id.newsList);
         adapter = new ArrayAdapter<>(this, R.layout.news_list_view, threeArticles);
         newsList.setAdapter(adapter);
     }
@@ -156,7 +133,7 @@ public class PinUp extends DreamService implements OnTouchListener {
         return true;
     }
 
-    public void load_next_three_articles(View v) {
+    private void anim_load_articles(View v) {
         final Animation animationFadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         final Animation animationFadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
 
@@ -165,27 +142,27 @@ public class PinUp extends DreamService implements OnTouchListener {
             @Override
             public void onAnimationStart(Animation animation) {
             }
-
             @Override
             public void onAnimationRepeat(Animation animation) {
             }
-
             @Override
             public void onAnimationEnd(Animation animation) {
-                news_index_pos = news_index_pos + 4;
-                threeArticles = fill_nf_array(news_index_pos);
+                load_next_three_articles();
                 refresh_list_view();
                 newsList.startAnimation(animationFadeIn);
             }
         });
+
         newsList.startAnimation(animationFadeOut);
-
         shift_view_position();
-
-
     }
 
-    public void refresh_list_view() {
+    private void load_next_three_articles() {
+        news_index_pos = news_index_pos + 4;
+        threeArticles = fill_nf_array(news_index_pos);
+    }
+
+    private void refresh_list_view() {
         adapter.clear();
         adapter.addAll(threeArticles);
         adapter.notifyDataSetChanged();
@@ -193,31 +170,11 @@ public class PinUp extends DreamService implements OnTouchListener {
         newsList.refreshDrawableState();
     }
 
-    public void shift_view_position() {
-        FrameLayout content_frame = (FrameLayout) findViewById(R.id.content_frame);
-
-//        content_frame.setY(1000);
-        replace(100, 100, content_frame);
+    private void shift_view_position() {
+        RelativeLayout content_frame = (RelativeLayout) findViewById(R.id.content_frame);
+        antiBurnIn.animate_moving_frameLayout(100, 100, content_frame);
     }
 
-    public void replace(int xTo, int yTo, FrameLayout content_frame) {
-        // create set of animations
-        AnimationSet replaceAnimation = new AnimationSet(false);
-        // animations should be applied on the finish line
-        replaceAnimation.setFillAfter(true);
-
-        // create translation animation
-        TranslateAnimation trans = new TranslateAnimation(0, 0,
-                TranslateAnimation.ABSOLUTE, xTo - content_frame.getLeft(), 0, 0,
-                TranslateAnimation.ABSOLUTE, yTo - content_frame.getTop());
-        trans.setDuration(1000);
-
-        // add new animations to the set
-        replaceAnimation.addAnimation(trans);
-
-        // start our animation
-        content_frame.startAnimation(replaceAnimation);
-    }
 
 
 
