@@ -20,6 +20,8 @@ import com.shirwa.simplistic_rss.RssReader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Rory on 08/07/2015 for ${Project_Name}
@@ -28,8 +30,8 @@ public class PinUp extends DreamService implements OnTouchListener {
 
     private final com.rozzles.pinup.antiBurnIn antiBurnIn = new antiBurnIn();
     private final com.rozzles.pinup.spotifyBroadcastHandler spotifyBroadcastHandler = new spotifyBroadcastHandler();
+    Timer shift_view_timer = new Timer();
     private List<RssItem> RssItems = null;
-
     private String url = "http://feeds.bbci.co.uk/news/world/rss.xml";
     private TextView nowPlaying_label;
     private ListView newsList;
@@ -41,15 +43,19 @@ public class PinUp extends DreamService implements OnTouchListener {
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+//            System.out.println(intent.getAction());
+
+            if (intent.getAction() == "com.rozzles.PinUp.shiftUI") {
+                shift_view_position();
+            } else {
             set_nowPlayingLabel(spotifyBroadcastHandler.spotify_broadcast_reciever(intent));
+        }
         }
     };
 
     public void set_nowPlayingLabel(String text) {
         if (text != null) nowPlaying_label.setText(text);
     }
-
-
 
     @Override
     public void onDreamingStarted() {
@@ -65,6 +71,8 @@ public class PinUp extends DreamService implements OnTouchListener {
 //        set_nowPlayingLabel();
         registerReceiver(mReceiver, spotifyBroadcastHandler.spotify_intent_filter());
 
+        TimerTask shift_view_task = new updateBallTask();
+        shift_view_timer.scheduleAtFixedRate(shift_view_task, 0, 300000);
     }
 
     public void assign_ui_components() {
@@ -72,7 +80,6 @@ public class PinUp extends DreamService implements OnTouchListener {
         newsList = (ListView) findViewById(R.id.newsList);
 
     }
-
 
     private void loadNewsfeed() {
         fetchRss(url);
@@ -112,6 +119,7 @@ public class PinUp extends DreamService implements OnTouchListener {
     @Override
     public void onDreamingStopped() {
 //daydream stopped
+        shift_view_timer.cancel();
     }
 
     @Override
@@ -205,6 +213,16 @@ public class PinUp extends DreamService implements OnTouchListener {
 
     }
 
+    class updateBallTask extends TimerTask {
+
+        public void run() {
+
+            Intent i = new Intent();
+            i.setAction("com.rozzles.PinUp.shiftUI");
+            sendBroadcast(i);
+
+        }
+    }
 
 
 }

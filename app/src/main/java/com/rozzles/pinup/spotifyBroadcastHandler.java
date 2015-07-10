@@ -14,6 +14,7 @@ public class spotifyBroadcastHandler {
         iF.addAction("com.spotify.music.metadatachanged");
         iF.addAction("com.spotify.music.playbackstatechanged");
         iF.addAction("com.spotify.music.queuechanged");
+        iF.addAction("com.rozzles.PinUp.shiftUI");
         return iF;
 
     }
