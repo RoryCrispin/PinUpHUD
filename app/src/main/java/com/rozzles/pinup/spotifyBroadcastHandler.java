@@ -18,7 +18,7 @@ public class spotifyBroadcastHandler {
 
     }
 
-    void spotify_broadcast_reciever(Intent intent) {
+    String spotify_broadcast_reciever(Intent intent) {
         // This is sent with all broadcasts, regardless of type. The value is taken from
         // System.currentTimeMillis(), which you can compare to in order to determine how
         // old the event is.
@@ -32,6 +32,7 @@ public class spotifyBroadcastHandler {
             String trackName = intent.getStringExtra("track");
             System.out.println("tn: " + trackName);
 
+            return (trackName + " - " + artistName);
 //            PinUp.set_nowPlayingLabel(trackName + " - " + artistName + " - " + albumName);
 
 //        } else if (action.equals(BroadcastTypes.PLAYBACK_STATE_CHANGED)) {
@@ -42,5 +43,7 @@ public class spotifyBroadcastHandler {
 //            // Sent only as a notification, your app may want to respond accordingly.
 //        }
         }
+        return null;
     }
+
 }

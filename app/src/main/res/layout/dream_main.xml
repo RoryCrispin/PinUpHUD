@@ -3,60 +3,56 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center"
+             android:onClick="touchey"
     android:orientation="vertical"
-    android:weightSum="1">
+             android:weightSum="1">
 
 
-    <RelativeLayout
-        android:id="@+id/content_frame"
+    <FrameLayout
+        android:id="@+id/movFrame"
         android:layout_width="match_parent"
-        android:layout_height="432dp">
+        android:layout_height="match_parent">
 
-        <TextClock
-            android:id="@+id/textClock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal"
-            android:textSize="32dp"/>
+        <RelativeLayout
+            android:id="@+id/content_frame"
+            android:layout_width="match_parent"
+            android:layout_height="432dp">
 
-        <Button
-            android:id="@+id/button"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textClock"
-            android:layout_below="@+id/newsList"
-            android:layout_gravity="center_horizontal|bottom"
-            android:onClick="anim_load_articles"
-            android:text="New Button"/>
+            <TextClock
+                android:id="@+id/textClock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:textSize="32dp"/>
 
-        <ListView
-            android:id="@+id/newsList"
-            android:layout_width="321dp"
-            android:layout_height="338dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/nowPlaying_label"
-            android:layout_gravity="center_horizontal|bottom"
+            <ListView
+                android:id="@+id/newsList"
+                android:layout_width="321dp"
+                android:layout_height="338dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/nowPlaying_label"
+                android:layout_gravity="center_horizontal|bottom"
 
-            android:layout_weight="0.41"
-            android:choiceMode="none"
-            android:divider="@null"
-            android:dividerHeight="0dp"
-            android:listSelector="@android:color/transparent"/>
+                android:layout_weight="0.41"
+                android:choiceMode="none"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:listSelector="@android:color/transparent"/>
 
-        <TextView
-            android:id="@+id/nowPlaying_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textClock"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal|top"
-            android:text="Small Text"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/nowPlaying_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textClock"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal|top"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+        </RelativeLayout>
+    </FrameLayout>
 
 
 </FrameLayout>
