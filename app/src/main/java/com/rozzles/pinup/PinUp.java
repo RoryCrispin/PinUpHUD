@@ -1,5 +1,5 @@
 /*
- * Rory Crispin --rorycrispin.co.uk -- rozzles.com
+ * Rory Crispin -rorycrispin.co.uk- rozzles.com
  *
  * Distributed under the Attribution-NonCommercial-ShareAlike 4.0 International License, full conditions can be found here:
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
@@ -27,11 +27,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.rozzles.pinup.newsSource.NewsSourceItem;
-import com.shirwa.simplistic_rss.RssItem;
-import com.shirwa.simplistic_rss.RssReader;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -41,19 +38,15 @@ public class PinUp extends DreamService implements OnTouchListener {
     private final com.rozzles.pinup.antiBurnIn antiBurnIn = new antiBurnIn();
     private final com.rozzles.pinup.spotifyBroadcastHandler spotifyBroadcastHandler = new spotifyBroadcastHandler();
     Timer regular_timer = new Timer();
-    private List<RssItem> RssItems = null;
-    private String url = "http://feeds.bbci.co.uk/news/world/rss.xml";
+    ListHelper listHelper;
     private TextView nowPlaying_label;
     private ListView newsList;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> threeArticles;
     private int news_index_pos = 0;
-
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-//            System.out.println(intent.getAction());
-
             if (Objects.equals(intent.getAction(), "com.rozzles.PinUp.shiftUI")) {
                 FrameLayout movFrame = (FrameLayout) findViewById(R.id.movFrame);
                 antiBurnIn.shift_view_position(movFrame);
@@ -70,67 +63,40 @@ public class PinUp extends DreamService implements OnTouchListener {
     @Override
     public void onDreamingStarted() {
 //daydream started
-
         setInteractive(true);
         setFullscreen(true);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.dream_main);
         assign_ui_components();
+        NewsSourceItem bbcWorldNews = new NewsSourceItem();
+        listHelper = new ListHelper();
+        bbcWorldNews.setRssUrl("http://feeds.bbci.co.uk/news/technology/rss.xml");
+        bbcWorldNews.getLatestItems(true);
+        listHelper.setCurrentNewsSourceItem(bbcWorldNews);
         loadNewsfeed();
-
+        initListHelper();
         registerReceiver(mReceiver, spotifyBroadcastHandler.spotify_intent_filter());
-
         TimerTask regular_timer_task_obj = new regular_timer_task();
-
         regular_timer.scheduleAtFixedRate(regular_timer_task_obj, 0, 300000);
-
-        NewsSourceItem torrentFreak = new NewsSourceItem();
-
-        torrentFreak.setRssUrl("http://feeds.feedburner.com/Torrentfreak");
-        torrentFreak.getLatestItems(true);
-        System.out.println(torrentFreak.getLatestItems(false).get(0).getTitle());
+        System.out.println(bbcWorldNews.getLatestItems(false).get(0).getTitle());
     }
 
     public void assign_ui_components() {
         nowPlaying_label = (TextView) findViewById(R.id.nowPlaying_label);
         newsList = (ListView) findViewById(R.id.newsList);
+    }
 
+    private void initListHelper() {
+        adapter = new ArrayAdapter<String>(this, R.layout.news_list_view, listHelper.getTopStories(listHelper.currentNewsSourceItem, 0, true));
+        listHelper.init(this, newsList, R.layout.news_list_view, adapter);
     }
 
     private void loadNewsfeed() {
-        fetchRss(url);
-        threeArticles = fill_nf_array(0);
-        System.out.println(RssItems.get(0).getPubDate().getTime());
-        adapter = new ArrayAdapter<>(this, R.layout.news_list_view, threeArticles);
-        newsList.setAdapter(adapter);
-    }
-
-    private ArrayList<String> fill_nf_array(int startPoint) {
-        ArrayList<String> threeArticles = new ArrayList<>();
-        for (int i = startPoint; i < startPoint + 3; i++) {
-            threeArticles.add(i - startPoint, (RssItems.get(i).getDescription() + " \n " + getTimeSince(i - startPoint)));
-        }
-        return threeArticles;
-    }
-
-    private String getTimeSince(int i) {
-        String timeSince = "";
-        try {
-            timeSince = RssItems.get(i).getTimeSincePost();
-        } catch (Exception e) {
-            // e.printStackTrace();
-        }
-        return timeSince;
-    }
-
-    private void fetchRss(String url) {
-        RssReader rssReader = new RssReader(url);
-        try {
-            RssItems = rssReader.getItems();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        fetchRss(url);
+//        threeArticles = fill_nf_array(0);
+//        System.out.println(RssItems.get(0).getPubDate().getTime());
+        newsList.getContext();
     }
 
     @Override
@@ -176,7 +142,7 @@ public class PinUp extends DreamService implements OnTouchListener {
             @Override
             public void onAnimationEnd(Animation animation) {
                 load_next_three_articles();
-                refresh_list_view();
+                listHelper.refresh_list_view();
                 newsList.startAnimation(animationFadeIn);
             }
         });
@@ -185,17 +151,9 @@ public class PinUp extends DreamService implements OnTouchListener {
 //        antiBurnIn.shift_view_position(v);
     }
 
-    private void load_next_three_articles() {
-        news_index_pos = news_index_pos + 4;
-        threeArticles = fill_nf_array(news_index_pos);
-    }
-
-    private void refresh_list_view() {
-        adapter.clear();
-        adapter.addAll(threeArticles);
-        adapter.notifyDataSetChanged();
-        newsList.invalidateViews();
-        newsList.refreshDrawableState();
+    private void load_next_three_articles() { //TODO build this
+//        news_index_pos = news_index_pos + 4;
+//        threeArticles = fill_nf_array(news_index_pos);
     }
 
     public void view_touched(View v) {

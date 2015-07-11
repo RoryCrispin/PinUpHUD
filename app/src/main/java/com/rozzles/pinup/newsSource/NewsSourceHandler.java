@@ -1,5 +1,5 @@
 /*
- * Rory Crispin --rorycrispin.co.uk -- rozzles.com
+ * Rory Crispin -rorycrispin.co.uk- rozzles.com
  *
  * Distributed under the Attribution-NonCommercial-ShareAlike 4.0 International License, full conditions can be found here:
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
