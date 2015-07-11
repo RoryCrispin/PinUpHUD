@@ -1,3 +1,14 @@
+/*
+ * Rory Crispin --rorycrispin.co.uk -- rozzles.com
+ *
+ * Distributed under the Attribution-NonCommercial-ShareAlike 4.0 International License, full conditions can be found here:
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
+ *
+ * This is free software, and you are welcome to redistribute it under certain conditions;
+ *
+ *  Go crazy,
+ *  Rozz xx
+ */
 package com.rozzles.pinup;
 
 import android.content.BroadcastReceiver;
@@ -20,12 +31,10 @@ import com.shirwa.simplistic_rss.RssReader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * Created by Rory on 08/07/2015 for ${Project_Name}
- */
 public class PinUp extends DreamService implements OnTouchListener {
 
     private final com.rozzles.pinup.antiBurnIn antiBurnIn = new antiBurnIn();
@@ -44,7 +53,7 @@ public class PinUp extends DreamService implements OnTouchListener {
         public void onReceive(Context context, Intent intent) {
 //            System.out.println(intent.getAction());
 
-            if (intent.getAction() == "com.rozzles.PinUp.shiftUI") {
+            if (Objects.equals(intent.getAction(), "com.rozzles.PinUp.shiftUI")) {
                 FrameLayout movFrame = (FrameLayout) findViewById(R.id.movFrame);
                 antiBurnIn.shift_view_position(movFrame);
             } else {
@@ -68,7 +77,7 @@ public class PinUp extends DreamService implements OnTouchListener {
         setContentView(R.layout.dream_main);
         assign_ui_components();
         loadNewsfeed();
-//        set_nowPlayingLabel();
+
         registerReceiver(mReceiver, spotifyBroadcastHandler.spotify_intent_filter());
 
         TimerTask regular_timer_task_obj = new regular_timer_task();
@@ -91,7 +100,7 @@ public class PinUp extends DreamService implements OnTouchListener {
     }
 
     private ArrayList<String> fill_nf_array(int startPoint) {
-        ArrayList<String> threeArticles = new ArrayList<String>();
+        ArrayList<String> threeArticles = new ArrayList<>();
         for (int i = startPoint; i < startPoint + 3; i++) {
             threeArticles.add(i - startPoint, (RssItems.get(i).getDescription() + " \n " + getTimeSince(i - startPoint)));
         }
