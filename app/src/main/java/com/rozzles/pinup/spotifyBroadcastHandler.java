@@ -31,7 +31,7 @@ public class spotifyBroadcastHandler {
 
     }
 
-    String spotify_broadcast_reciever(Intent intent) {
+    String spotify_broadcast_receiver(Intent intent) {
         // This is sent with all broadcasts, regardless of type. The value is taken from
         // System.currentTimeMillis(), which you can compare to in order to determine how
         // old the event is.

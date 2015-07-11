@@ -26,6 +26,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.rozzles.pinup.newsSource.NewsSourceItem;
 import com.shirwa.simplistic_rss.RssItem;
 import com.shirwa.simplistic_rss.RssReader;
 
@@ -46,7 +47,7 @@ public class PinUp extends DreamService implements OnTouchListener {
     private ListView newsList;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> threeArticles;
-    private int news_index_pos = 0; //sometimes snake case is better ok
+    private int news_index_pos = 0;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -57,7 +58,7 @@ public class PinUp extends DreamService implements OnTouchListener {
                 FrameLayout movFrame = (FrameLayout) findViewById(R.id.movFrame);
                 antiBurnIn.shift_view_position(movFrame);
             } else {
-                set_nowPlayingLabel(spotifyBroadcastHandler.spotify_broadcast_reciever(intent));
+                set_nowPlayingLabel(spotifyBroadcastHandler.spotify_broadcast_receiver(intent));
             }
         }
     };
@@ -83,6 +84,12 @@ public class PinUp extends DreamService implements OnTouchListener {
         TimerTask regular_timer_task_obj = new regular_timer_task();
 
         regular_timer.scheduleAtFixedRate(regular_timer_task_obj, 0, 300000);
+
+        NewsSourceItem torrentFreak = new NewsSourceItem();
+
+        torrentFreak.setRssUrl("http://feeds.feedburner.com/Torrentfreak");
+        torrentFreak.getLatestItems(true);
+        System.out.println(torrentFreak.getLatestItems(false).get(0).getTitle());
     }
 
     public void assign_ui_components() {
@@ -130,6 +137,7 @@ public class PinUp extends DreamService implements OnTouchListener {
     public void onDreamingStopped() {
 //daydream stopped
         regular_timer.cancel();
+        unregisterReceiver(mReceiver);
     }
 
     @Override
