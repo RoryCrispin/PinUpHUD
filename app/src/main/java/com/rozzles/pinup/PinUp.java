@@ -30,26 +30,26 @@ public class PinUp extends DreamService implements OnTouchListener {
 
     private final com.rozzles.pinup.antiBurnIn antiBurnIn = new antiBurnIn();
     private final com.rozzles.pinup.spotifyBroadcastHandler spotifyBroadcastHandler = new spotifyBroadcastHandler();
-    Timer shift_view_timer = new Timer();
+    Timer regular_timer = new Timer();
     private List<RssItem> RssItems = null;
     private String url = "http://feeds.bbci.co.uk/news/world/rss.xml";
     private TextView nowPlaying_label;
     private ListView newsList;
     private ArrayAdapter<String> adapter;
-    private int current_y_view_position = 0;
     private ArrayList<String> threeArticles;
     private int news_index_pos = 0; //sometimes snake case is better ok
-    private boolean news_anim_down = true;
+
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 //            System.out.println(intent.getAction());
 
             if (intent.getAction() == "com.rozzles.PinUp.shiftUI") {
-                shift_view_position();
+                FrameLayout movFrame = (FrameLayout) findViewById(R.id.movFrame);
+                antiBurnIn.shift_view_position(movFrame);
             } else {
-            set_nowPlayingLabel(spotifyBroadcastHandler.spotify_broadcast_reciever(intent));
-        }
+                set_nowPlayingLabel(spotifyBroadcastHandler.spotify_broadcast_reciever(intent));
+            }
         }
     };
 
@@ -71,8 +71,9 @@ public class PinUp extends DreamService implements OnTouchListener {
 //        set_nowPlayingLabel();
         registerReceiver(mReceiver, spotifyBroadcastHandler.spotify_intent_filter());
 
-        TimerTask shift_view_task = new updateBallTask();
-        shift_view_timer.scheduleAtFixedRate(shift_view_task, 0, 300000);
+        TimerTask regular_timer_task_obj = new regular_timer_task();
+
+        regular_timer.scheduleAtFixedRate(regular_timer_task_obj, 0, 300000);
     }
 
     public void assign_ui_components() {
@@ -119,7 +120,7 @@ public class PinUp extends DreamService implements OnTouchListener {
     @Override
     public void onDreamingStopped() {
 //daydream stopped
-        shift_view_timer.cancel();
+        regular_timer.cancel();
     }
 
     @Override
@@ -150,9 +151,11 @@ public class PinUp extends DreamService implements OnTouchListener {
             @Override
             public void onAnimationStart(Animation animation) {
             }
+
             @Override
             public void onAnimationRepeat(Animation animation) {
             }
+
             @Override
             public void onAnimationEnd(Animation animation) {
                 load_next_three_articles();
@@ -162,7 +165,7 @@ public class PinUp extends DreamService implements OnTouchListener {
         });
 
         newsList.startAnimation(animationFadeOut);
-        shift_view_position();
+//        antiBurnIn.shift_view_position(v);
     }
 
     private void load_next_three_articles() {
@@ -178,42 +181,12 @@ public class PinUp extends DreamService implements OnTouchListener {
         newsList.refreshDrawableState();
     }
 
-    private void shift_view_position() {
-
-        FrameLayout movFrame = (FrameLayout) findViewById(R.id.movFrame);
-//        movFrame.getHeight();
-        System.out.println(current_y_view_position);
-
-//        if (current_y_view_position < 300){
-//            antiBurnIn.animate_moving_frameLayout(0, 100, movFrame);
-//            current_y_view_position = current_y_view_position + 100;
-//        } else {
-//            antiBurnIn.animate_moving_frameLayout(0, -100, movFrame);
-//            current_y_view_position = current_y_view_position -100;
-//        }
-
-        if (news_anim_down) {
-            antiBurnIn.animate_moving_frameLayout(0, 100, movFrame);
-            current_y_view_position = current_y_view_position + 100;
-            if (current_y_view_position == 300) {
-                news_anim_down = false;
-            }
-        } else {
-            antiBurnIn.animate_moving_frameLayout(0, -100, movFrame);
-            current_y_view_position = current_y_view_position - 100;
-            if (current_y_view_position == 0) {
-                news_anim_down = true;
-            }
-        }
+    public void view_touched(View v) {
+//        antiBurnIn.shift_view_position(v);
 
     }
 
-    public void touchey(View v) {
-        shift_view_position();
-
-    }
-
-    class updateBallTask extends TimerTask {
+    class regular_timer_task extends TimerTask {
 
         public void run() {
 

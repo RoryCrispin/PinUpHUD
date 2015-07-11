@@ -5,7 +5,27 @@ import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 
 public class antiBurnIn {
+    private boolean news_anim_down = true;
+    private int current_y_view_position = 0;
     public antiBurnIn() {
+    }
+
+    public void shift_view_position(FrameLayout movFrame) {
+
+        if (news_anim_down) {
+            animate_moving_frameLayout(0, 100, movFrame);
+            current_y_view_position = current_y_view_position + 100;
+            if (current_y_view_position == 300) {
+                news_anim_down = false;
+            }
+        } else {
+            animate_moving_frameLayout(0, -100, movFrame);
+            current_y_view_position = current_y_view_position - 100;
+            if (current_y_view_position == 0) {
+                news_anim_down = true;
+            }
+        }
+
     }
 
     public void animate_moving_frameLayout(final int xTo, final int yTo, final FrameLayout movFrame) {
