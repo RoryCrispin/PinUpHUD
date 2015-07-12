@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.rozzles.pinup.R;
+import com.rozzles.pinup.newsSource.NewsSourceItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,7 +89,6 @@ public class addNewsActivity extends ActionBarActivity {
 
         final EditText txtUrl = new EditText(this);
 
-// Set the default text to a link of the Queen
         txtUrl.setHint("http://feeds.bbci.co.uk/news/world/rss.xml");
 
         new AlertDialog.Builder(this)
@@ -124,7 +124,14 @@ public class addNewsActivity extends ActionBarActivity {
 
     private boolean verifyRSS(String url) {
 
-        return true;
+        NewsSourceItem testItem = new NewsSourceItem();
+//        testItem.setRssUrl(url);
+        testItem.setRssUrl("http://feeds.bbci.co.uk/news/world/rss.xml");
+
+        if (testItem.getLatestItems(true) != null)
+            return true;
+        else
+            return false;
     }
 
     public boolean saveArray(String[] array, String arrayName, Context mContext) {
