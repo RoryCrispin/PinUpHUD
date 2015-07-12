@@ -12,7 +12,9 @@
 
 package com.rozzles.pinup.settings;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 import com.rozzles.pinup.R;
@@ -27,6 +29,23 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+
+        Preference pref = findPreference("addNewsButton");
+        pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+                Intent myIntent = new Intent(getActivity(), addNewsActivity.class);
+                SettingsFragment.this.startActivity(myIntent);
+
+                return false;
+            }
+        });
+
+
+
+
     }
 
 

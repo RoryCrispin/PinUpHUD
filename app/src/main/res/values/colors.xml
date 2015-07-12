@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Rory Crispin -rorycrispin.co.uk- rozzles.com
   ~
@@ -11,13 +12,10 @@
   -->
 
 <resources>
-    <string name="app_name">PinUp</string>
-
-    <string name="daydream_name">PinUp by Rozz</string>
-    <string name="title_activity_settings">SettingsActivity</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_add_news">News Sources</string>
-
+    <color name="primary">#2d2d2d</color>
+    <color name="secondary">#FF4081</color>
+    <color name="accent">#33b5e5</color>
+    <color name="divider">#CCC</color>
+    <color name="icons">#FFF</color>
+    <color name="item_background">#FFF</color>
 </resources>

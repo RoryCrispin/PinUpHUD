@@ -9,8 +9,7 @@
   ~
   ~  Go crazy,
   ~  Rozz xx
-  -->
-
+-->
 <manifest
     package="com.rozzles.pinup"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -41,6 +40,10 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:label="@string/title_activity_settings">
+        </activity>
+        <activity
+            android:name=".settings.addNewsActivity"
+            android:label="@string/title_activity_add_news">
         </activity>
     </application>
 

@@ -23,9 +23,10 @@
         android:key="text"
         android:summary="Location for weather lookup"
         android:title="Weather Location"/>
-
-    <ListPreference
-        android:key="friendList"
+    <Preference
+        android:key="addNewsButton"
+        android:summary="Add and remove RSS news sources"
+        android:title="News Sources"
         />
 
 

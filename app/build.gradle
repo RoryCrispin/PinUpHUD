@@ -36,4 +36,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'net.danlew:android.joda:2.8.1'
     compile 'com.ocpsoft:ocpsoft-pretty-time:1.0.6'
+    compile 'com.getbase:floatingactionbutton:1.9.1'
+
+
 }
